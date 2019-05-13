@@ -57,4 +57,28 @@
  * @param {number[]} nums
  * @return {number}
  */
-var removeDuplicates = function(nums) {};
+var removeDuplicates = function(nums) {
+    let j = 0;
+    for (let i = 0; i < nums.length; i++) {
+        const thisNum = nums[i];
+        const leftNum = nums[j - 1];
+        if (leftNum !== undefined && thisNum === leftNum) {
+            while (nums[i + 1] !== undefined) {
+                if (nums[i + 1] !== leftNum) {
+                    nums[j] = nums[i + 1];
+                    break;
+                } else {
+                    i++;
+                }
+            }
+            i++;
+            if (i < nums.length) {
+                j++;
+            }
+        } else {
+            nums[j] = thisNum;
+            j++;
+        }
+    }
+    return j;
+};

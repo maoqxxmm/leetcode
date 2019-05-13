@@ -42,42 +42,100 @@
  * @param {number[]} nums2
  * @return {number}
  */
+// var findMedianSortedArrays = function(nums1, nums2) {
+//     const m = nums1.length;
+//     const n = nums2.length;
+//     const isEven = (m + n) % 2 === 0;
+//     const middle = (m + n + (isEven ? 0 : 1)) / 2;
+//     for (i = 0; i <= Math.min(middle, m); i++) {
+//         const j = middle - i;
+//         if (j > n) {
+//             continue;
+//         }
+//         if (i >= 1 && nums1[i - 1] > nums2[j]) {
+//             continue;
+//         }
+//         if (j >= 1 && nums2[j - 1] > nums1[i]) {
+//             continue;
+//         }
+//         const nums1Left = nums1[i - 1];
+//         const nums2Left = nums2[j - 1];
+//         let leftMax;
+//         if (nums1Left && nums2Left) {
+//             leftMax = Math.max(nums1Left, nums2Left);
+//         } else {
+//             leftMax = nums1Left || nums2Left;
+//         }
+//         if (!isEven) {
+//             return leftMax;
+//         } else {
+//             const nums1Right = nums1[i];
+//             const nums2Right = nums2[j];
+//             let rightMin;
+//             if (nums1Right && nums2Right) {
+//                 rightMin = Math.min(nums1Right, nums2Right);
+//             } else {
+//                 rightMin = nums1Right || nums2Right;
+//             }
+//             return (leftMax + rightMin) / 2;
+//         }
+//     }
+// };
+
+/**
+ * 如果我们需要 O(log(m+n)) 的解法，从 线性 到 对数，最容易想到的就是二分法
+ * @param {number[]} nums1
+ * @param {number[]} nums2
+ * @return {number}
+ */
+
 var findMedianSortedArrays = function(nums1, nums2) {
     const m = nums1.length;
     const n = nums2.length;
     const isEven = (m + n) % 2 === 0;
     const middle = (m + n + (isEven ? 0 : 1)) / 2;
-    for (i = 0; i <= Math.min(middle, m); i++) {
-        const j = middle - i;
+    let left = 0;
+    let right = Math.min(middle, m);
+    let i, j;
+    while (left <= right) {
+        i = parseInt((right + left) / 2);
+        j = middle - i;
         if (j > n) {
+            left = i + 1;
             continue;
         }
         if (i >= 1 && nums1[i - 1] > nums2[j]) {
+            right = i - 1;
             continue;
         }
         if (j >= 1 && nums2[j - 1] > nums1[i]) {
+            left = i + 1;
             continue;
         }
-        const nums1Left = nums1[i - 1];
-        const nums2Left = nums2[j - 1];
-        let leftMax;
-        if (nums1Left && nums2Left) {
-            leftMax = Math.max(nums1Left, nums2Left);
+        left = i;
+        break;
+    }
+    i = left;
+    j = middle - i;
+    const nums1Left = nums1[i - 1];
+    const nums2Left = nums2[j - 1];
+    let leftMax;
+    if (nums1Left && nums2Left) {
+        leftMax = Math.max(nums1Left, nums2Left);
+    } else {
+        leftMax = nums1Left || nums2Left;
+    }
+    if (!isEven) {
+        return leftMax;
+    } else {
+        const nums1Right = nums1[i];
+        const nums2Right = nums2[j];
+        let rightMin;
+        if (nums1Right && nums2Right) {
+            rightMin = Math.min(nums1Right, nums2Right);
         } else {
-            leftMax = nums1Left || nums2Left;
+            rightMin = nums1Right || nums2Right;
         }
-        if (!isEven) {
-            return leftMax;
-        } else {
-            const nums1Right = nums1[i];
-            const nums2Right = nums2[j];
-            let rightMin;
-            if (nums1Right && nums2Right) {
-                rightMin = Math.min(nums1Right, nums2Right);
-            } else {
-                rightMin = nums1Right || nums2Right;
-            }
-            return (leftMax + rightMin) / 2;
-        }
+        return (leftMax + rightMin) / 2;
     }
 };
